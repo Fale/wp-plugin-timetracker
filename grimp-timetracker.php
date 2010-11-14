@@ -9,4 +9,7 @@ Author URI: http://grimp.eu
 License: GPL2
 */
 
+include_once 'grimp-timetracker_setup.php';
+grimp_timetracker_setup();
+
 ?>
