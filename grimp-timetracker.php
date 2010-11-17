@@ -61,6 +61,41 @@ function grimp_timetracker_add_hour() {
   }
 
   global $wpdb;
-  echo '<p>Here is where the form would go if I actually had options.</p>';
+  global $user_ID;
+  get_currentuserinfo();
+
+  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
+    $table_name = $wpdb->prefix . "timetracker_hours";
+		$wpdb->insert( $table_name, array( 'id' => '', 'person' => $user_ID, 'hours' => $_POST['hours'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%i', '%s', '%s', '%s', '%s' ) );
+
+	}
+  $o = '<div class="wrap">';
+  $o.= '  <h2>Add a new hours:</h2>';
+  $o.= '  <form method="post" name="update_form" target="_self">';
+  $o.= '    <table>';
+  $o.= '      <tr>';
+  $o.= '        <th>Hours</th>';
+  $o.= '        <td><input type="text" name="hours" value="1.00" size="30" /></td>';
+  $o.= '      </tr>';
+  $o.= '      <tr>';
+  $o.= '        <th>Description</th>';
+  $o.= '        <td><input type="text" name="description" value="" size="30" /></td>';
+  $o.= '      </tr>';
+  $o.= '      <tr>';
+  $o.= '        <th>Day</th>';
+  $o.= '        <td><input type="text" name="day" value="';
+  $o.= the_date('Y-m-d');
+  $o.= '" size="30" /></td>';
+  $o.= '      </tr>';
+  $o.= '    </table>';
+  $o.= '    <p class="submit" id="jump_submit">';
+  $o.= '      <input name="submitted" type="hidden" value="yes" />';
+  $o.= '      <input type="submit" name="Submit" value="Save Changes" />';
+  $o.= '    </p>';
+  $o.= '  </form>';
+  $o.= '</div>';
+  
+  echo $o;
+    echo the_date('Y-m-d');
 }
 ?>
