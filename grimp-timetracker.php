@@ -194,7 +194,8 @@ function grimp_timetracker_add_hour() {
   $o = '<div class="wrap">';
   $o.= '  <h2>Add a new hours:</h2>';
   $o.= '  <form method="post" name="update_form" target="_self">';
-  $o.= '    <table>';
+  $o.= '    <table class="form-table">';
+  $o.= '      <tbody>';
   $o.= '      <tr>';
   $o.= '        <th>Project</th>';
   $o.= '        <td><select name="project">';
@@ -207,13 +208,13 @@ function grimp_timetracker_add_hour() {
   $o.= '        <td><input type="text" name="hours" value="1.00" size="30" /></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
-  $o.= '      <tr>';
   $o.= '        <th>Type</th>';
   $o.= '        <td><select name="type">';
   foreach($types as $c => $type)
     $o.= '          <option value="' . $type->id . '">' . $type->name . '</option>';
   $o.= '        </select></td>';
   $o.= '      </tr>';
+  $o.= '      <tr>';
   $o.= '        <th>Description</th>';
   $o.= '        <td><input type="text" name="description" value="" size="30" /></td>';
   $o.= '      </tr>';
@@ -221,6 +222,7 @@ function grimp_timetracker_add_hour() {
   $o.= '        <th>Day</th>';
   $o.= '        <td><input type="text" name="day" value="' . date('Y-m-d') . '" size="30" /></td>';
   $o.= '      </tr>';
+  $o.= '      <tbody>';
   $o.= '    </table>';
   $o.= '    <p class="submit" id="jump_submit">';
   $o.= '      <input name="submitted" type="hidden" value="yes" />';
