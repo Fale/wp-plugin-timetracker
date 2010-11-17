@@ -69,6 +69,7 @@ function grimp_timetracker_add_hour() {
 		$wpdb->insert( $table_name, array( 'id' => '', 'person' => $user_ID, 'hours' => $_POST['hours'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%i', '%s', '%s', '%s', '%s' ) );
 
 	}
+
   $o = '<div class="wrap">';
   $o.= '  <h2>Add a new hours:</h2>';
   $o.= '  <form method="post" name="update_form" target="_self">';
@@ -83,9 +84,7 @@ function grimp_timetracker_add_hour() {
   $o.= '      </tr>';
   $o.= '      <tr>';
   $o.= '        <th>Day</th>';
-  $o.= '        <td><input type="text" name="day" value="';
-  $o.= the_date('Y-m-d');
-  $o.= '" size="30" /></td>';
+  $o.= '        <td><input type="text" name="day" value="' . date('Y-m-d') . '" size="30" /></td>';
   $o.= '      </tr>';
   $o.= '    </table>';
   $o.= '    <p class="submit" id="jump_submit">';
@@ -96,6 +95,5 @@ function grimp_timetracker_add_hour() {
   $o.= '</div>';
   
   echo $o;
-    echo the_date('Y-m-d');
 }
 ?>
