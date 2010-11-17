@@ -117,11 +117,14 @@ function grimp_timetracker_options() {
     $o.= '  <tbody>';
     $ids = $wpdb->get_col("SELECT id FROM $table_users");
     foreach($ids as $i => $id) {
+      $h = '';
       $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE person = $id");
-      $o.= '    <tr>';
-      $o.= '      <td>' . get_userdata($id)->display_name . '</td>';
-      $o.= '      <td>' . $h . '</td>';
-      $o.= '    </tr>';
+      if ($h) {
+        $o.= '    <tr>';
+        $o.= '      <td>' . get_userdata($id)->display_name . '</td>';
+        $o.= '      <td>' . $h . '</td>';
+        $o.= '    </tr>';
+      }
     }
     $o.= '  </tbody>';
     $o.= '  <tfoot>';
