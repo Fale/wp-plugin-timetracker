@@ -192,34 +192,34 @@ function grimp_timetracker_add_hour() {
     $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $id");
 
   $o = '<div class="wrap">';
-  $o.= '  <h2>Add a new hours:</h2>';
+  $o.= '  <h2>Add new hours:</h2>';
   $o.= '  <form method="post" name="update_form" target="_self">';
   $o.= '    <table class="form-table">';
   $o.= '      <tbody>';
   $o.= '      <tr>';
-  $o.= '        <th>Project</th>';
+  $o.= '        <th><label for="project">Project</label></th>';
   $o.= '        <td><select name="project">';
   foreach($projects as $c => $project)
     $o.= '          <option value="' . $project->id . '">' . $project->name . '</option>';
   $o.= '        </select></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
-  $o.= '        <th>Hours</th>';
+  $o.= '        <th><label for="hours">Hours</label></th>';
   $o.= '        <td><input type="text" name="hours" value="1.00" size="30" /></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
-  $o.= '        <th>Type</th>';
+  $o.= '        <th><label for="type">Type</label></th>';
   $o.= '        <td><select name="type">';
   foreach($types as $c => $type)
     $o.= '          <option value="' . $type->id . '">' . $type->name . '</option>';
   $o.= '        </select></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
-  $o.= '        <th>Description</th>';
+  $o.= '        <th><label for="description">Description</label></th>';
   $o.= '        <td><input type="text" name="description" value="" size="30" /></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
-  $o.= '        <th>Day</th>';
+  $o.= '        <th><label for="day">Day</label></th>';
   $o.= '        <td><input type="text" name="day" value="' . date('Y-m-d') . '" size="30" /></td>';
   $o.= '      </tr>';
   $o.= '      <tbody>';
