@@ -27,7 +27,64 @@ function grimp_timetracker_options() {
   }
   
   global $wpdb;
-  echo '<p>Here is where the form would go if I actually had options.</p>';
+
+  $table_hours = $wpdb->prefix . "timetracker_hours";
+  $table_projects = $wpdb->prefix . "timetracker_projects";
+  $table_types = $wpdb->prefix . "timetracker_types";
+
+  $ids = $wpdb->get_col("SELECT id FROM $table_projects");
+  foreach($ids as $i => $id)
+    $projects[] = $wpdb->get_row("SELECT * FROM $table_projects WHERE id = $id");
+
+  $ids = $wpdb->get_col("SELECT id FROM $table_types");
+  foreach($ids as $i => $id)
+    $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $id");
+
+  $o = '<table class="widefat">';
+  $o.= '  <thead>';
+  $o.= '   <tr>';
+  $o.= '      <th> </td>';
+  $o.= '      <th>Persona</th>';
+  $o.= '      <th>Ore</th>';
+  $o.= '      <th>Tipo</th>';
+  $o.= '      <th>Descrizione</th>';
+  $o.= '      <th>Giorno</th>';
+  $o.= '    </tr>';
+  $o.= '  </thead>';
+  $o.= '  <tbody>';
+  foreach($projects as $p => $project) {
+    $o.= '    <tr>';
+    $o.= '      <td colspan=7>' . $project->name . '</td>';
+    $o.= '    </tr>';
+    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE project = $project->id");
+    foreach($ids as $i => $id)
+      $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $id");
+      foreach($hours as $h => $hour) {
+        $o.= '    <tr>';
+        $o.= '      <td> </td>';
+        $o.= '      <td>' . $hour->person . '</td>';
+        $o.= '      <td>' . $hour->hours . '</td>';
+        $o.= '      <td>' . $types[$hour->type]->name . '</td>';
+        $o.= '      <td>' . $hour->description . '</td>';
+        $o.= '      <td>' . $hour->day . '</td>';
+        $o.= '    </tr>';
+      }
+    unset ($hours);
+  }
+  $o.= '  </tbody>';
+  $o.= '  <tfoot>';
+  $o.= '   <tr>';
+  $o.= '      <th> </td>';
+  $o.= '      <th>Persona</th>';
+  $o.= '      <th>Ore</th>';
+  $o.= '      <th>Tipo</th>';
+  $o.= '      <th>Descrizione</th>';
+  $o.= '      <th>Giorno</th>';
+  $o.= '    </tr>';
+  $o.= '  </tfoot>';
+  $o.= '</table>';
+
+  echo $o;  
 }
 
 function grimp_timetracker_add_project() {
@@ -96,7 +153,7 @@ function grimp_timetracker_add_hour() {
   $table_types = $wpdb->prefix . "timetracker_types";
 
   if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes')
-		$wpdb->insert( $table_projects, array( 'id' => '', 'person' => $user_ID, 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%i', '%s', '%s', '%s', '%s', '%s' ) );
+		$wpdb->insert( $table_hours, array( 'person' => $user_ID, 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'type' => $_POST['type'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%s', '%s', '%s', '%s', '%s', '%s' ) );
 
   $ids = $wpdb->get_col("SELECT id FROM $table_projects");
   foreach($ids as $i => $id)
@@ -114,7 +171,7 @@ function grimp_timetracker_add_hour() {
   $o.= '        <th>Project</th>';
   $o.= '        <td><select name="project">';
   foreach($projects as $c => $project)
-    $o.= '          <option value="' . $project->name . '">' . $project->name . '</option>';
+    $o.= '          <option value="' . $project->id . '">' . $project->name . '</option>';
   $o.= '        </select></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
@@ -123,10 +180,10 @@ function grimp_timetracker_add_hour() {
   $o.= '      </tr>';
   $o.= '      <tr>';
   $o.= '      <tr>';
-  $o.= '        <th>Project</th>';
+  $o.= '        <th>Type</th>';
   $o.= '        <td><select name="type">';
   foreach($types as $c => $type)
-    $o.= '          <option value="' . $type->name . '">' . $type->name . '</option>';
+    $o.= '          <option value="' . $type->id . '">' . $type->name . '</option>';
   $o.= '        </select></td>';
   $o.= '      </tr>';
   $o.= '        <th>Description</th>';

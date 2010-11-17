@@ -41,6 +41,7 @@ function grimp_timetracker_setup() {
  	    person smallint unsigned NOT NULL,
  	    project smallint unsigned NOT NULL,
 	    hours decimal(5,2) unsigned NOT NULL,
+	    type smallint unsigned NOT NULL,
 	    description tinytext NOT NULL,
 	    day date NOT NULL,
   	  UNIQUE KEY (id)
