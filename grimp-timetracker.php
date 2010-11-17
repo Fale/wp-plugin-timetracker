@@ -198,29 +198,29 @@ function grimp_timetracker_add_hour() {
   $o.= '      <tbody>';
   $o.= '      <tr>';
   $o.= '        <th><label for="project">Project</label></th>';
-  $o.= '        <td><select name="project">';
+  $o.= '        <td><select name="project" id="project">';
   foreach($projects as $c => $project)
-    $o.= '          <option value="' . $project->id . '">' . $project->name . '</option>';
+    $o.= '          <option id="project" value="' . $project->id . '">' . $project->name . '</option>';
   $o.= '        </select></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
   $o.= '        <th><label for="hours">Hours</label></th>';
-  $o.= '        <td><input type="text" name="hours" value="1.00" size="30" /></td>';
+  $o.= '        <td><input name="hours" id="hours" value="1.00" class="regular-text" type="text"/></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
   $o.= '        <th><label for="type">Type</label></th>';
-  $o.= '        <td><select name="type">';
+  $o.= '        <td><select name="type" id="name">';
   foreach($types as $c => $type)
-    $o.= '          <option value="' . $type->id . '">' . $type->name . '</option>';
+    $o.= '          <option id="name" value="' . $type->id . '">' . $type->name . '</option>';
   $o.= '        </select></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
   $o.= '        <th><label for="description">Description</label></th>';
-  $o.= '        <td><input type="text" name="description" value="" size="30" /></td>';
+  $o.= '        <td><input name="description" id="description" value="" class="regular-text" type="text"/></td>';
   $o.= '      </tr>';
   $o.= '      <tr>';
   $o.= '        <th><label for="day">Day</label></th>';
-  $o.= '        <td><input type="text" name="day" value="' . date('Y-m-d') . '" size="30" /></td>';
+  $o.= '        <td><input name="day" id="day" value="' . date('Y-m-d') . '" class="regular-text" type="text"/></td>';
   $o.= '      </tr>';
   $o.= '      <tbody>';
   $o.= '    </table>';
