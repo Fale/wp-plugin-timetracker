@@ -3,7 +3,7 @@
 Plugin Name: Grimp-TimeTracker
 Plugin URI: http://git.grimp.eu/
 Description: This plugin will allow you to keep tracking of the time you invest over different projects.
-Version: 0.2
+Version: 0.3
 Author: Fabio Alessandro Locati
 Author URI: http://grimp.eu
 License: GPL2
