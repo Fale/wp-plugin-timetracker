@@ -42,6 +42,8 @@ function grimp_timetracker_options() {
 
   $o = '<div class="wrap">';
   if ($_GET['p']) {
+    $p = $wpdb->get_var("SELECT name FROM $table_projects WHERE id = $_GET[p]");
+    $o.= '<h2>Progetto ' . $p . '</h2> [<a href="admin.php?page=grimp-timetracker-options">back</a>]';
     $o.= '<table class="widefat">';
     $o.= '  <thead>';
     $o.= '   <tr>';
@@ -78,6 +80,7 @@ function grimp_timetracker_options() {
     $o.= '  </tfoot>';
     $o.= '</table>';
   } else {
+    $o.= '<h2>Progetti</h2>';
     $o.= '<table class="widefat">';
     $o.= '  <thead>';
     $o.= '   <tr>';
