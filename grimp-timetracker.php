@@ -41,28 +41,23 @@ function grimp_timetracker_options() {
     $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $id");
 
   $o = '<div class="wrap">';
-  $o.= '<table class="widefat">';
-  $o.= '  <thead>';
-  $o.= '   <tr>';
-  $o.= '      <th> </td>';
-  $o.= '      <th>Persona</th>';
-  $o.= '      <th>Ore</th>';
-  $o.= '      <th>Tipo</th>';
-  $o.= '      <th>Descrizione</th>';
-  $o.= '      <th>Giorno</th>';
-  $o.= '    </tr>';
-  $o.= '  </thead>';
-  $o.= '  <tbody>';
-  foreach($projects as $p => $project) {
-    $o.= '    <tr>';
-    $o.= '      <td colspan=7>' . $project->name . '</td>';
+  if ($_GET['p']) {
+    $o.= '<table class="widefat">';
+    $o.= '  <thead>';
+    $o.= '   <tr>';
+    $o.= '      <th>Persona</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '      <th>Tipo</th>';
+    $o.= '      <th>Descrizione</th>';
+    $o.= '      <th>Giorno</th>';
     $o.= '    </tr>';
-    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE project = $project->id");
+    $o.= '  </thead>';
+    $o.= '  <tbody>';
+    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE project = $_GET[p]");
     foreach($ids as $i => $id)
       $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $id");
       foreach($hours as $h => $hour) {
         $o.= '    <tr>';
-        $o.= '      <td> </td>';
         $o.= '      <td>' . get_userdata($hour->person)->display_name . '</td>';
         $o.= '      <td>' . $hour->hours . '</td>';
         $o.= '      <td>' . $types[$hour->type]->name . '</td>';
@@ -71,19 +66,45 @@ function grimp_timetracker_options() {
         $o.= '    </tr>';
       }
     unset ($hours);
+    $o.= '  </tbody>';
+    $o.= '  <tfoot>';
+    $o.= '   <tr>';
+    $o.= '      <th>Persona</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '      <th>Tipo</th>';
+    $o.= '      <th>Descrizione</th>';
+    $o.= '      <th>Giorno</th>';
+    $o.= '    </tr>';
+    $o.= '  </tfoot>';
+    $o.= '</table>';
+  } else {
+    $o.= '<table class="widefat">';
+    $o.= '  <thead>';
+    $o.= '   <tr>';
+    $o.= '      <th>Progetto</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '    </tr>';
+    $o.= '  </thead>';
+    $o.= '  <tbody>';
+    foreach($projects as $p => $pr) {
+      $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE project = $pr->id");
+      $o.= '    <tr>';
+      $o.= '      <td><a href="admin.php?page=grimp-timetracker-options&p=' . $pr->id . '">' . $pr->name . '</a></td>';
+      $o.= '      <td>' . $h . '</td>';
+      $o.= '    </tr>';
+    }
+    $o.= '  </tbody>';
+    $o.= '  <tfoot>';
+    $o.= '   <tr>';
+    $o.= '      <th>Persona</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '    </tr>';
+    $o.= '  </tfoot>';
+    $o.= '</table>';
   }
-  $o.= '  </tbody>';
-  $o.= '  <tfoot>';
-  $o.= '   <tr>';
-  $o.= '      <th> </td>';
-  $o.= '      <th>Persona</th>';
-  $o.= '      <th>Ore</th>';
-  $o.= '      <th>Tipo</th>';
-  $o.= '      <th>Descrizione</th>';
-  $o.= '      <th>Giorno</th>';
-  $o.= '    </tr>';
-  $o.= '  </tfoot>';
-  $o.= '</table>';
+  $o.= '</div>';
+
+  $o.= '<div class="wrap">';
   $o.= '</div>';
 
   echo $o;  
