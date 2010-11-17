@@ -80,7 +80,49 @@ function grimp_timetracker_options() {
     $o.= '    </tr>';
     $o.= '  </tfoot>';
     $o.= '</table>';
-  } else {
+  }
+  
+  if (isset($_GET['u'])) {
+    $u = $wpdb->get_var("SELECT id FROM $table_users WHERE id = $_GET[u]");
+    $o.= '<h2>Ore fatte da ' . get_userdata($u)->display_name . ' <a href="' . strstr($_SERVER['REQUEST_URI'], "&", true) . '" class="button">Back</a></h2>';
+    $o.= '<table class="widefat">';
+    $o.= '  <thead>';
+    $o.= '   <tr>';
+    $o.= '      <th>Progetto</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '      <th>Tipo</th>';
+    $o.= '      <th>Descrizione</th>';
+    $o.= '      <th>Giorno</th>';
+    $o.= '    </tr>';
+    $o.= '  </thead>';
+    $o.= '  <tbody>';
+    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE person = $_GET[u]");
+    foreach($ids as $i => $id)
+      $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $id");
+      foreach($hours as $h => $hour) {
+        $o.= '    <tr>';
+        $o.= '      <td>' . $projects[$hour->project-1]->name . '</td>';
+        $o.= '      <td>' . $hour->hours . '</td>';
+        $o.= '      <td>' . $types[$hour->type-1]->name . '</td>';
+        $o.= '      <td>' . $hour->description . '</td>';
+        $o.= '      <td>' . $hour->day . '</td>';
+        $o.= '    </tr>';
+      }
+    unset ($hours);
+    $o.= '  </tbody>';
+    $o.= '  <tfoot>';
+    $o.= '   <tr>';
+    $o.= '      <th>Progetto</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '      <th>Tipo</th>';
+    $o.= '      <th>Descrizione</th>';
+    $o.= '      <th>Giorno</th>';
+    $o.= '    </tr>';
+    $o.= '  </tfoot>';
+    $o.= '</table>';
+  }
+
+  if( !isset($_GET['p']) && !isset($_GET['u'])) {
     $o.= '<h2>Progetti</h2>';
     $o.= '<table class="widefat">';
     $o.= '  <thead>';
@@ -121,7 +163,7 @@ function grimp_timetracker_options() {
       $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE person = $id");
       if ($h) {
         $o.= '    <tr>';
-        $o.= '      <td>' . get_userdata($id)->display_name . '</td>';
+        $o.= '      <td><a href="' . $_SERVER['REQUEST_URI'] . '&u=' . $id . '">' . get_userdata($id)->display_name . '</a></td>';
         $o.= '      <td>' . $h . '</td>';
         $o.= '    </tr>';
       }
