@@ -151,6 +151,9 @@ function grimp_timetracker_add_project() {
   if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
     $table_name = $wpdb->prefix . "timetracker_projects";
 		$wpdb->insert( $table_name, array( 'id' => '', 'name' => $_POST['name'] ), array( '%i', '%s' ) );
+		echo '<div id="message" class="updated">';
+		echo '  <p>Project has been added.</p>';
+		echo '</div>';
 	}
 
   $o = '<div class="wrap">';
@@ -184,6 +187,9 @@ function grimp_timetracker_add_type() {
   if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
     $table_name = $wpdb->prefix . "timetracker_types";
 		$wpdb->insert( $table_name, array( 'id' => '', 'name' => $_POST['name'] ), array( '%i', '%s' ) );
+		echo '<div id="message" class="updated">';
+		echo '  <p>Type has been added.</p>';
+		echo '</div>';
 	}
 
   $o = '<div class="wrap">';
@@ -220,8 +226,12 @@ function grimp_timetracker_add_hour() {
   $table_projects = $wpdb->prefix . "timetracker_projects";
   $table_types = $wpdb->prefix . "timetracker_types";
 
-  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes')
-		$wpdb->insert( $table_hours, array( 'person' => $user_ID, 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'type' => $_POST['type'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%s', '%s', '%s', '%s', '%s', '%s' ) );
+  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
+    $wpdb->insert( $table_hours, array( 'person' => $user_ID, 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'type' => $_POST['type'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%s', '%s', '%s', '%s', '%s', '%s' ) );
+		echo '<div id="message" class="updated">';
+		echo '  <p>Hours have been added.</p>';
+		echo '</div>';
+  }
 
   $ids = $wpdb->get_col("SELECT id FROM $table_projects");
   foreach($ids as $i => $id)
