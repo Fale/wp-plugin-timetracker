@@ -35,7 +35,24 @@ function grimp_timetracker_add_project() {
   }
 
   global $wpdb;
-  echo '<p>Here is where the form would go if I actually had options.</p>';
+  
+  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
+    $table_name = $wpdb->prefix . "timetracker_projects";
+		$wpdb->insert( $table_name, array( 'id' => '', 'name' => $_POST['name'] ), array( '%i', '%s' ) );
+	}
+
+  $o = '<div class="wrap">';
+  $o.= '  <h2>Add a new project:</h2>';
+  $o.= '  <form method="post" name="update_form" target="_self">';
+  $o.= '    Name <input type="text" name="name" value="" size="30" />';
+  $o.= '    <p class="submit" id="jump_submit">';
+  $o.= '      <input name="submitted" type="hidden" value="yes" />';
+  $o.= '      <input type="submit" name="Submit" value="Save Changes" />';
+  $o.= '    </p>';
+  $o.= '  </form>';
+  $o.= '</div>';
+  
+  echo $o;
 }
 
 function grimp_timetracker_add_hour() {
