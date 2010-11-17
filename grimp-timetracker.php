@@ -63,7 +63,7 @@ function grimp_timetracker_options() {
         $o.= '    <tr>';
         $o.= '      <td>' . get_userdata($hour->person)->display_name . '</td>';
         $o.= '      <td>' . $hour->hours . '</td>';
-        $o.= '      <td>' . $types[$hour->type]->name . '</td>';
+        $o.= '      <td>' . $types[$hour->type-1]->name . '</td>';
         $o.= '      <td>' . $hour->description . '</td>';
         $o.= '      <td>' . $hour->day . '</td>';
         $o.= '    </tr>';
