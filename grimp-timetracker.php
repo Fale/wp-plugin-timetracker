@@ -31,6 +31,7 @@ function grimp_timetracker_options() {
   $table_hours = $wpdb->prefix . "timetracker_hours";
   $table_projects = $wpdb->prefix . "timetracker_projects";
   $table_types = $wpdb->prefix . "timetracker_types";
+  $table_users = $wpdb->users;
 
   $ids = $wpdb->get_col("SELECT id FROM $table_projects");
   foreach($ids as $i => $id)
@@ -104,10 +105,34 @@ function grimp_timetracker_options() {
     $o.= '    </tr>';
     $o.= '  </tfoot>';
     $o.= '</table>';
-  }
-  $o.= '</div>';
+    $o.= '<br />';
+    $o.= '<h2>Persone</h2>';
+    $o.= '<table class="widefat">';
+    $o.= '  <thead>';
+    $o.= '   <tr>';
+    $o.= '      <th>Persona</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '    </tr>';
+    $o.= '  </thead>';
+    $o.= '  <tbody>';
+    $ids = $wpdb->get_col("SELECT id FROM $table_users");
+    foreach($ids as $i => $id) {
+      $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE person = $id");
+      $o.= '    <tr>';
+      $o.= '      <td>' . get_userdata($id)->display_name . '</td>';
+      $o.= '      <td>' . $h . '</td>';
+      $o.= '    </tr>';
+    }
+    $o.= '  </tbody>';
+    $o.= '  <tfoot>';
+    $o.= '   <tr>';
+    $o.= '      <th>Persona</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '    </tr>';
+    $o.= '  </tfoot>';
+    $o.= '</table>';
 
-  $o.= '<div class="wrap">';
+  }
   $o.= '</div>';
 
   echo $o;  
