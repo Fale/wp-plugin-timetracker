@@ -64,16 +64,27 @@ function grimp_timetracker_add_hour() {
   global $user_ID;
   get_currentuserinfo();
 
-  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
-    $table_name = $wpdb->prefix . "timetracker_hours";
-		$wpdb->insert( $table_name, array( 'id' => '', 'person' => $user_ID, 'hours' => $_POST['hours'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%i', '%s', '%s', '%s', '%s' ) );
+  $table_projects = $wpdb->prefix . "timetracker_projects";
+  $table_hours = $wpdb->prefix . "timetracker_hours";
 
-	}
+  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes')
+		$wpdb->insert( $table_projects, array( 'id' => '', 'person' => $user_ID, 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%i', '%s', '%s', '%s', '%s', '%s' ) );
+  
+  $ids = $wpdb->get_col("SELECT id FROM $table_projects");
+  foreach($ids as $i => $id)
+    $projects[] = $wpdb->get_row("SELECT * FROM $table_projects WHERE id = $id");
 
   $o = '<div class="wrap">';
   $o.= '  <h2>Add a new hours:</h2>';
   $o.= '  <form method="post" name="update_form" target="_self">';
   $o.= '    <table>';
+  $o.= '      <tr>';
+  $o.= '        <th>Project</th>';
+  $o.= '        <td><select name="project">';
+  foreach($projects as $c => $project)
+    $o.= '          <option value="' . $project->name . '">' . $project->name . '</option>';
+  $o.= '        </select></td>';
+  $o.= '      </tr>';
   $o.= '      <tr>';
   $o.= '        <th>Hours</th>';
   $o.= '        <td><input type="text" name="hours" value="1.00" size="30" /></td>';
