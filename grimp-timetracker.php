@@ -43,7 +43,7 @@ function grimp_timetracker_options() {
   $o = '<div class="wrap">';
   if (isset($_GET['p'])) {
     $p = $wpdb->get_var("SELECT name FROM $table_projects WHERE id = $_GET[p]");
-    $o.= '<h2>Progetto ' . $p . ' <a href="admin.php?page=grimp-timetracker-options" class="button">Back</a> </h2>';
+    $o.= '<h2>Progetto ' . $p . ' <a href="' . strstr($_SERVER['REQUEST_URI'], "&", true) . '" class="button">Back</a></h2>';
     $o.= '<table class="widefat">';
     $o.= '  <thead>';
     $o.= '   <tr>';
@@ -92,7 +92,7 @@ function grimp_timetracker_options() {
     foreach($projects as $p => $pr) {
       $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE project = $pr->id");
       $o.= '    <tr>';
-      $o.= '      <td><a href="admin.php?page=grimp-timetracker-options&p=' . $pr->id . '">' . $pr->name . '</a></td>';
+      $o.= '      <td><a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $pr->id . '">' . $pr->name . '</a></td>';
       $o.= '      <td>' . $h . '</td>';
       $o.= '    </tr>';
     }
