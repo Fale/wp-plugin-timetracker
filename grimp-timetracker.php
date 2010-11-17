@@ -40,7 +40,8 @@ function grimp_timetracker_options() {
   foreach($ids as $i => $id)
     $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $id");
 
-  $o = '<table class="widefat">';
+  $o = '<div class="wrap">';
+  $o.= '<table class="widefat">';
   $o.= '  <thead>';
   $o.= '   <tr>';
   $o.= '      <th> </td>';
@@ -83,6 +84,7 @@ function grimp_timetracker_options() {
   $o.= '    </tr>';
   $o.= '  </tfoot>';
   $o.= '</table>';
+  $o.= '</div>';
 
   echo $o;  
 }
