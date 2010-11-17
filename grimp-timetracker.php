@@ -128,11 +128,12 @@ function grimp_timetracker_add_project() {
   $o = '<div class="wrap">';
   $o.= '  <h2>Add a new project:</h2>';
   $o.= '  <form method="post" name="update_form" target="_self">';
-  $o.= '    Name <input type="text" name="name" value="" size="30" />';
-  $o.= '    <p class="submit" id="jump_submit">';
-  $o.= '      <input name="submitted" type="hidden" value="yes" />';
-  $o.= '      <input type="submit" name="Submit" value="Save Changes" />';
-  $o.= '    </p>';
+  $o.= '    <ul>';
+  $o.= '      <li><label for="name">Name: </label>';
+  $o.= '      <input id="name" maxlength="45" size="10" name="name" value="" /></li>';   
+  $o.= '    </ul>';
+  $o.= '    <input name="submitted" type="hidden" value="yes" />';
+  $o.= '    <input type="submit" value="Submit" class="button-primary" />';
   $o.= '  </form>';
   $o.= '</div>';
   
@@ -154,11 +155,12 @@ function grimp_timetracker_add_type() {
   $o = '<div class="wrap">';
   $o.= '  <h2>Add a new type of hours:</h2>';
   $o.= '  <form method="post" name="update_form" target="_self">';
-  $o.= '    Name <input type="text" name="name" value="" size="30" />';
-  $o.= '    <p class="submit" id="jump_submit">';
-  $o.= '      <input name="submitted" type="hidden" value="yes" />';
-  $o.= '      <input type="submit" name="Submit" value="Save Changes" />';
-  $o.= '    </p>';
+  $o.= '    <ul>';
+  $o.= '      <li><label for="name">Name: </label>';
+  $o.= '      <input id="name" maxlength="45" size="10" name="name" value="" /></li>';   
+  $o.= '    </ul>';
+  $o.= '    <input name="submitted" type="hidden" value="yes" />';
+  $o.= '    <input type="submit" value="Submit" class="button-primary" />';
   $o.= '  </form>';
   $o.= '</div>';
   
