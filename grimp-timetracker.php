@@ -41,7 +41,7 @@ function grimp_timetracker_options() {
     $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $id");
 
   $o = '<div class="wrap">';
-  if ($_GET['p']) {
+  if (isset($_GET['p'])) {
     $p = $wpdb->get_var("SELECT name FROM $table_projects WHERE id = $_GET[p]");
     $o.= '<h2>Progetto ' . $p . ' <a href="admin.php?page=grimp-timetracker-options" class="button">Back</a> </h2>';
     $o.= '<table class="widefat">';
