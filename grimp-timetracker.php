@@ -56,7 +56,7 @@ function grimp_timetracker_options() {
     $o.= '    </tr>';
     $o.= '  </thead>';
     $o.= '  <tbody>';
-    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE project = $_GET[p]");
+    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE project = $_GET[p] ORDER BY day ASC");
     foreach($ids as $i => $id)
       $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $id");
       foreach($hours as $h => $hour) {
@@ -102,7 +102,7 @@ function grimp_timetracker_options() {
     $o.= '    </tr>';
     $o.= '  </thead>';
     $o.= '  <tbody>';
-    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE person = $_GET[u]");
+    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE person = $_GET[u] ORDER BY day ASC");
     foreach($ids as $i => $id)
       $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $id");
       foreach($hours as $h => $hour) {
