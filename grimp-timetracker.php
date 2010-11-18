@@ -15,7 +15,7 @@ grimp_timetracker_setup();
 add_action('admin_menu', 'grimp_timetracker_menu');
 
 function grimp_timetracker_menu() {
-  add_menu_page(__('Timetracker','grimp-timetracker'), __('Timetracker','grimp-timetracker'), 'read', 'grimp-timetracker-options', 'grimp_timetracker_options');
+  add_menu_page(__('Time Tracker','grimp-timetracker'), __('Time Tracker','grimp-timetracker'), 'read', 'grimp-timetracker-options', 'grimp_timetracker_options');
   add_submenu_page( 'grimp-timetracker-options', __('Add Project','grimp-timetracker'), __('Add Project','grimp-timetracker'), 'manage_options', 'grimp-timetracker-add-project', 'grimp_timetracker_add_project');
   add_submenu_page( 'grimp-timetracker-options', __('Add Type','grimp-timetracker'), __('Add Type','grimp-timetracker'), 'manage_options', 'grimp-timetracker-add-type', 'grimp_timetracker_add_type');
   add_submenu_page( 'grimp-timetracker-options', __('Add Hours','grimp-timetracker'), __('Add Hours','grimp-timetracker'), 'read', 'grimp-timetracker-add-hour', 'grimp_timetracker_add_hour');
