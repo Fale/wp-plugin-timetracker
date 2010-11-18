@@ -234,42 +234,6 @@ function grimp_timetracker_options() {
   echo $o;  
 }
 
-function grimp_timetracker_add_project() {
-  if (!current_user_can('manage_options'))  {
-    wp_die( __('You do not have sufficient permissions to access this page.') );
-  }
-
-  global $wpdb;
-  
-  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
-    $table_name = $wpdb->prefix . "timetracker_projects";
-		$wpdb->insert( $table_name, array( 'id' => '', 'name' => $_POST['name'] ), array( '%i', '%s' ) );
-		echo '<div id="message" class="updated">';
-		echo '  <p>Project has been added.</p>';
-		echo '</div>';
-	}
-
-  $o = '<div class="wrap">';
-  $o.= '  <h2>Add a new project:</h2>';
-  $o.= '  <form method="post" name="update_form" target="_self">';
-  $o.= '    <table class="form-table">';
-  $o.= '      <tbody>';
-  $o.= '        <tr>';
-  $o.= '          <th><label for="name">Name: </label></th>';
-  $o.= '          <td><input name="name" id="name" value="" class="regular-text" type="text"/></td>';
-  $o.= '        </tr>';
-  $o.= '      </tbody>';
-  $o.= '    </table>';
-  $o.= '    <p class="submit" id="jump_submit">';
-  $o.= '      <input name="submitted" type="hidden" value="yes" />';
-  $o.= '      <input type="submit" value="Submit" class="button-primary" />';
-  $o.= '    </p>';
-  $o.= '  </form>';
-  $o.= '</div>';
-  
-  echo $o;
-}
-
 function grimp_timetracker_edit_project() {
   if (!current_user_can('manage_options'))  {
     wp_die( __('You do not have sufficient permissions to access this page.') );
@@ -278,23 +242,41 @@ function grimp_timetracker_edit_project() {
   global $wpdb;
   $table_projects = $wpdb->prefix . "timetracker_projects";
   
-  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
-		$wpdb->update( $table_projects, array( 'name' => $_POST['name'] ), array( 'id' => $_POST['id']), array( '%s' ), array( '%s' ) );
+  if (isset($_GET['p']))
+    $i = $_GET['p'];
+
+  if (isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
+    if (isset($i))
+  		$wpdb->update($table_projects, array('name'=>$_POST['name']), array('id'=>$_POST['id']), array('%s'), array('%s'));
+  	else
+  		$wpdb->insert($table_projects, array('name'=>$_POST['name']), array('%s'));
 		echo '<div id="message" class="updated">';
-		echo '  <p>Project has been changed.</p>';
+    if (isset($i))
+      echo '  <p>Project has been changed.</p>';
+    else
+  		echo '  <p>Project has been added.</p>';
 		echo '</div>';
 	}
 
-  $p = $wpdb->get_row("SELECT * FROM $table_projects WHERE id = $_GET[p]");
+  if (isset($i))
+    $p = $wpdb->get_row("SELECT * FROM $table_projects WHERE id = $i");
+
   $o = '<div class="wrap">';
-  $o.= '  <h2>Edit project ' . $p->name . ':</h2>';
+  if (isset($i))
+    $o.= '  <h2>Edit project ' . $p->name . ':</h2>';
+  else
+    $o.= '  <h2>Add project:</h2>';
   $o.= '  <form method="post" name="update_form" target="_self">';
   $o.= '    <table class="form-table">';
   $o.= '      <tbody>';
   $o.= '        <tr>';
   $o.= '          <th><label for="name">Name: </label></th>';
-  $o.= '          <td><input name="name" id="name" value="' . $p->name . '" class="regular-text" type="text"/></td>';
-  $o.= '          <td><input name="id" id="id" value="' . $p->id . '" class="hidden" type="text"/></td>';
+  if (isset($i))
+    $o.= '          <td><input name="name" id="name" value="' . $p->name . '" class="regular-text" type="text"/></td>';
+  else
+    $o.= '          <td><input name="name" id="name" value="" class="regular-text" type="text"/></td>';
+  if (isset($i))
+    $o.= '          <td><input name="id" id="id" value="' . $p->id . '" class="hidden" type="text"/></td>';
   $o.= '        </tr>';
   $o.= '      </tbody>';
   $o.= '    </table>';
