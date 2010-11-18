@@ -64,7 +64,7 @@ function grimp_timetracker_options() {
         $o.= '      <td>';
         $o.= get_userdata($hour->person)->display_name;
         $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&a=edit&ho=' . $hour->id . '">Edit</a> |';
+        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-hour&h=' . $hour->id . '">Edit</a> |';
         $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&ho=' . $hour->id . '">Delete</a></span>';
       $o.= '</div>';
         $o.= '</td>';
@@ -110,7 +110,7 @@ function grimp_timetracker_options() {
         $o.= '      <td>';
         $o.= $projects[$hour->project-1]->name;
         $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&a=edit&ho=' . $hour->id . '">Edit</a> |';
+        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-hour&h=' . $hour->id . '">Edit</a> |';
         $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&ho=' . $hour->id . '">Delete</a></span>';
       $o.= '</div>';
         $o.= '</td>';
@@ -210,7 +210,7 @@ function grimp_timetracker_options() {
         $o.= '      <td>';
         $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $ty->id . '">' . $ty->name . '</a>';
         $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-edit-type&t=' . $ty->id . '">Edit</a> |';
+        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-type&t=' . $ty->id . '">Edit</a> |';
         $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&pr=' . $ty->id . '">Delete</a></span>';
       $o.= '</div>';
         $o.= '</td>';
