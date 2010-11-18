@@ -208,7 +208,8 @@ function grimp_timetracker_options() {
       $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE type = $ty->id");
       $o.= '    <tr>';
         $o.= '      <td>';
-        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $ty->id . '">' . $ty->name . '</a>';
+//        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $ty->id . '">' . $ty->name . '</a>';
+        $o.= $ty->name;
         $o.= '<div class="row-actions no-wrap">';
         $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-type&t=' . $ty->id . '">Edit</a> |';
         $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&pr=' . $ty->id . '">Delete</a></span>';
