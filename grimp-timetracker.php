@@ -21,6 +21,7 @@ function grimp_timetracker_menu() {
   add_submenu_page( 'grimp-timetracker-options', __('Add Hours','grimp-timetracker'), __('Add Hours','grimp-timetracker'), 'read', 'grimp-timetracker-add-hour', 'grimp_timetracker_add_hour');
   add_submenu_page( 'grimp-timetracker-options', __('Edit Project','grimp-timetracker'), __('Edit Project','grimp-timetracker'), 'read', 'grimp-timetracker-edit-project', 'grimp_timetracker_edit_project');
   add_submenu_page( 'grimp-timetracker-options', __('Edit Type','grimp-timetracker'), __('Edit Type','grimp-timetracker'), 'read', 'grimp-timetracker-edit-type', 'grimp_timetracker_edit_type');
+  add_submenu_page( 'grimp-timetracker-options', __('Edit Hours','grimp-timetracker'), __('Edit Hours','grimp-timetracker'), 'read', 'grimp-timetracker-edit-hour', 'grimp_timetracker_edit_hour');
 }
 
 function grimp_timetracker_options() {
@@ -196,7 +197,37 @@ function grimp_timetracker_options() {
     $o.= '    </tr>';
     $o.= '  </tfoot>';
     $o.= '</table>';
-
+    $o.= '<br />';
+    $o.= '<h2>Tipi</h2>';
+    $o.= '<table class="widefat">';
+    $o.= '  <thead>';
+    $o.= '   <tr>';
+    $o.= '      <th>Tipi</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '    </tr>';
+    $o.= '  </thead>';
+    $o.= '  <tbody>';
+    foreach($types as $t => $ty) {
+      $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE type = $ty->id");
+      $o.= '    <tr>';
+        $o.= '      <td>';
+        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $ty->id . '">' . $ty->name . '</a>';
+        $o.= '<div class="row-actions no-wrap">';
+        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-edit-type&t=' . $ty->id . '">Edit</a> |';
+        $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&pr=' . $ty->id . '">Delete</a></span>';
+      $o.= '</div>';
+        $o.= '</td>';
+      $o.= '      <td>' . $h . '</td>';
+      $o.= '    </tr>';
+    }
+    $o.= '  </tbody>';
+    $o.= '  <tfoot>';
+    $o.= '   <tr>';
+    $o.= '      <th>Persona</th>';
+    $o.= '      <th>Ore</th>';
+    $o.= '    </tr>';
+    $o.= '  </tfoot>';
+    $o.= '</table>';
   }
   $o.= '</div>';
 
@@ -409,6 +440,89 @@ function grimp_timetracker_add_hour() {
   $o.= '      <tr>';
   $o.= '        <th><label for="day">Day</label></th>';
   $o.= '        <td><input name="day" id="day" value="' . date('Y-m-d') . '" class="regular-text" type="text"/></td>';
+  $o.= '      </tr>';
+  $o.= '      <tbody>';
+  $o.= '    </table>';
+  $o.= '    <p class="submit" id="jump_submit">';
+  $o.= '      <input name="submitted" type="hidden" value="yes" />';
+  $o.= '      <input type="submit" value="Submit" class="button-primary" />';
+  $o.= '    </p>';
+  $o.= '  </form>';
+  $o.= '</div>';
+  
+  echo $o;
+}
+
+function grimp_timetracker_edit_hour() {
+  if (!current_user_can('read'))  {
+    wp_die( __('You do not have sufficient permissions to access this page.') );
+  }
+
+  global $wpdb;
+  global $user_ID;
+  get_currentuserinfo();
+
+  $table_hours = $wpdb->prefix . "timetracker_hours";
+  $table_projects = $wpdb->prefix . "timetracker_projects";
+  $table_types = $wpdb->prefix . "timetracker_types";
+
+
+  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
+		$wpdb->update( $table_hours, array( 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'type' => $_POST['type'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( 'id' => $_POST['id']), array( '%s', '%s', '%s', '%s', '%s' ), array( '%s' ) );
+		echo '<div id="message" class="updated">';
+		echo '  <p>Hours have been edited.</p>';
+		echo '</div>';
+  }
+
+  $h = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $_GET[h]");
+
+  $ids = $wpdb->get_col("SELECT id FROM $table_projects");
+  foreach($ids as $i => $id)
+    $projects[] = $wpdb->get_row("SELECT * FROM $table_projects WHERE id = $id");
+
+  $ids = $wpdb->get_col("SELECT id FROM $table_types");
+  foreach($ids as $i => $id)
+    $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $id");
+
+  $o = '<div class="wrap">';
+  $o.= '  <h2>Edit hours:</h2>';
+  $o.= '  <form method="post" name="update_form" target="_self">';
+  $o.= '    <table class="form-table">';
+  $o.= '      <tbody>';
+  $o.= '      <tr>';
+  $o.= '        <th><label for="project">Project</label></th>';
+  $o.= '        <td><select name="project" id="project">';
+  foreach($projects as $c => $project) {
+    $o.= '          <option id="type" value="' . $project->id . '"';
+    if($h->project == $project->id)
+      $o.= 'selected';
+    $o.= '>' . $project->name . '</option>';
+  }
+  $o.= '        </select></td>';
+  $o.= '      </tr>';
+  $o.= '      <tr>';
+  $o.= '        <th><label for="hours">Hours</label></th>';
+  $o.= '        <td><input name="hours" id="hours" value="' . $h->hours . '" class="regular-text" type="text"/></td>';
+  $o.= '      </tr>';
+  $o.= '      <tr>';
+  $o.= '        <th><label for="type">Type</label></th>';
+  $o.= '        <td><select name="type" id="type">';
+  foreach($types as $c => $type) {
+    $o.= '          <option id="type" value="' . $type->id . '"';
+    if($h->type == $type->id)
+      $o.= 'selected';
+    $o.= '>' . $type->name . '</option>';
+  }
+  $o.= '        </select></td>';
+  $o.= '      </tr>';
+  $o.= '      <tr>';
+  $o.= '        <th><label for="description">Description</label></th>';
+  $o.= '        <td><input name="description" id="description" value="' . $h->description . '" class="regular-text" type="text"/></td>';
+  $o.= '      </tr>';
+  $o.= '      <tr>';
+  $o.= '        <th><label for="day">Day</label></th>';
+  $o.= '        <td><input name="day" id="day" value="' . $h->day . '" class="regular-text" type="text"/></td>';
+  $o.= '        <td><input name="id" id="id" value="' . $h->id . '" class="hidden" type="text"/></td>';
   $o.= '      </tr>';
   $o.= '      <tbody>';
   $o.= '    </table>';
