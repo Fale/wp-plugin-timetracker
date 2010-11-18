@@ -61,7 +61,13 @@ function grimp_timetracker_options() {
       $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $id");
       foreach($hours as $h => $hour) {
         $o.= '    <tr>';
-        $o.= '      <td>' . get_userdata($hour->person)->display_name . '</td>';
+        $o.= '      <td>';
+        $o.= get_userdata($hour->person)->display_name;
+        $o.= '<div class="row-actions no-wrap">';
+        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&a=edit&ho=' . $hour->id . '">Edit</a> |';
+        $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&ho=' . $hour->id . '">Delete</a></span>';
+      $o.= '</div>';
+        $o.= '</td>';
         $o.= '      <td>' . $hour->hours . '</td>';
         $o.= '      <td>' . $types[$hour->type-1]->name . '</td>';
         $o.= '      <td>' . $hour->description . '</td>';
@@ -101,7 +107,13 @@ function grimp_timetracker_options() {
       $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $id");
       foreach($hours as $h => $hour) {
         $o.= '    <tr>';
-        $o.= '      <td>' . $projects[$hour->project-1]->name . '</td>';
+        $o.= '      <td>';
+        $o.= $projects[$hour->project-1]->name;
+        $o.= '<div class="row-actions no-wrap">';
+        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&a=edit&ho=' . $hour->id . '">Edit</a> |';
+        $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&ho=' . $hour->id . '">Delete</a></span>';
+      $o.= '</div>';
+        $o.= '</td>';
         $o.= '      <td>' . $hour->hours . '</td>';
         $o.= '      <td>' . $types[$hour->type-1]->name . '</td>';
         $o.= '      <td>' . $hour->description . '</td>';
@@ -135,7 +147,13 @@ function grimp_timetracker_options() {
     foreach($projects as $p => $pr) {
       $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE project = $pr->id");
       $o.= '    <tr>';
-      $o.= '      <td><a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $pr->id . '">' . $pr->name . '</a></td>';
+        $o.= '      <td>';
+        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $pr->id . '">' . $pr->name . '</a>';
+        $o.= '<div class="row-actions no-wrap">';
+        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&a=edit&pr=' . $pr->id . '">Edit</a> |';
+        $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&pr=' . $pr->id . '">Delete</a></span>';
+      $o.= '</div>';
+        $o.= '</td>';
       $o.= '      <td>' . $h . '</td>';
       $o.= '    </tr>';
     }
