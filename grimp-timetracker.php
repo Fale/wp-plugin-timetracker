@@ -310,33 +310,28 @@ function grimp_timetracker_type() {
   if (isset($i))
     $t = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $i");
 
-  $o = '<div class="wrap">';
-  if (isset($i))
-    $o.= '  <h2>Edit type ' . $t->name . ':</h2>';
-  else
-    $o.= '  <h2>Add type:</h2>';
-  $o.= '  <form method="post" name="update_form" target="_self">';
-  $o.= '    <table class="form-table">';
-  $o.= '      <tbody>';
-  $o.= '        <tr>';
-  $o.= '          <th><label for="name">Name: </label></th>';
-  if (isset($i))
-    $o.= '          <td><input name="name" id="name" value="' . $t->name . '" class="regular-text" type="text"/></td>';
-  else
-    $o.= '          <td><input name="name" id="name" value="" class="regular-text" type="text"/></td>';
-  if (isset($i))
-    $o.= '          <td><input name="id" id="id" value="' . $t->id . '" class="hidden" type="text"/></td>';
-  $o.= '        </tr>';
-  $o.= '      </tbody>';
-  $o.= '    </table>';
-  $o.= '    <p class="submit" id="jump_submit">';
-  $o.= '      <input name="submitted" type="hidden" value="yes" />';
-  $o.= '      <input type="submit" value="Submit" class="button-primary" />';
-  $o.= '    </p>';
-  $o.= '  </form>';
-  $o.= '</div>';
-
-  echo $o;
+  $t1 = (isset($i)) ? "<h2>Edit type $t->name:</h2>" : "<h2>Add type:</h2>";
+  $t2 = (isset($i)) ? $t->name : "" ;
+  $t3 = (isset($i)) ? "<td><input name='id' id='id' value='$t->id' class='hidden' type='text'/></td>" : "";
+  echo "
+<div class='wrap'>
+  $t1
+  <form method='post' name='update_form' target='_self'>
+    <table class='form-table'>
+      <tbody>
+        <tr>
+          <th><label for='name'>Name: </label></th>
+          <td><input name='name' id='name' value='$t2' class='regular-text' type='text'/></td>
+          $t3
+        </tr>
+      </tbody>
+    </table>
+    <p class='submit' id='jump_submit'>
+      <input name='submitted' type='hidden' value='yes' />
+      <input type='submit' value='Submit' class='button-primary' />
+    </p>
+  </form>
+</div>";
 }
 
 function grimp_timetracker_add_hour() {
