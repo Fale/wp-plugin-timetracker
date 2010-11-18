@@ -19,6 +19,7 @@ function grimp_timetracker_menu() {
   add_submenu_page( 'grimp-timetracker-options', __('Add Project','grimp-timetracker'), __('Add Project','grimp-timetracker'), 'manage_options', 'grimp-timetracker-add-project', 'grimp_timetracker_add_project');
   add_submenu_page( 'grimp-timetracker-options', __('Add Type','grimp-timetracker'), __('Add Type','grimp-timetracker'), 'manage_options', 'grimp-timetracker-add-type', 'grimp_timetracker_add_type');
   add_submenu_page( 'grimp-timetracker-options', __('Add Hours','grimp-timetracker'), __('Add Hours','grimp-timetracker'), 'read', 'grimp-timetracker-add-hour', 'grimp_timetracker_add_hour');
+  add_submenu_page( 'grimp-timetracker-options', __('Edit Project','grimp-timetracker'), __('Edit Project','grimp-timetracker'), 'read', 'grimp-timetracker-edit-project', 'grimp_timetracker_edit_project');
 }
 
 function grimp_timetracker_options() {
@@ -134,7 +135,7 @@ function grimp_timetracker_options() {
     $o.= '</table>';
   }
 
-  if( !isset($_GET['p']) && !isset($_GET['u'])) {
+  if (!isset($_GET['p']) && !isset($_GET['u'])) {
     $o.= '<h2>Progetti</h2>';
     $o.= '<table class="widefat">';
     $o.= '  <thead>';
@@ -150,7 +151,7 @@ function grimp_timetracker_options() {
         $o.= '      <td>';
         $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $pr->id . '">' . $pr->name . '</a>';
         $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&a=edit&pr=' . $pr->id . '">Edit</a> |';
+        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-edit-project&p=' . $pr->id . '">Edit</a> |';
         $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&pr=' . $pr->id . '">Delete</a></span>';
       $o.= '</div>';
         $o.= '</td>';
@@ -234,6 +235,44 @@ function grimp_timetracker_add_project() {
   $o.= '  </form>';
   $o.= '</div>';
   
+  echo $o;
+}
+
+function grimp_timetracker_edit_project() {
+  if (!current_user_can('manage_options'))  {
+    wp_die( __('You do not have sufficient permissions to access this page.') );
+  }
+
+  global $wpdb;
+  $table_projects = $wpdb->prefix . "timetracker_projects";
+  
+  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
+		$wpdb->update( $table_projects, array( 'name' => $_POST['name'] ), array( 'id' => $_POST['id']), array( '%s' ), array( '%s' ) );
+		echo '<div id="message" class="updated">';
+		echo '  <p>Project has been changed.</p>';
+		echo '</div>';
+	}
+
+  $p = $wpdb->get_row("SELECT * FROM $table_projects WHERE id = $_GET[p]");
+  $o = '<div class="wrap">';
+  $o.= '  <h2>Edit project ' . $p->name . ':</h2>';
+  $o.= '  <form method="post" name="update_form" target="_self">';
+  $o.= '    <table class="form-table">';
+  $o.= '      <tbody>';
+  $o.= '        <tr>';
+  $o.= '          <th><label for="name">Name: </label></th>';
+  $o.= '          <td><input name="name" id="name" value="' . $p->name . '" class="regular-text" type="text"/></td>';
+  $o.= '          <td><input name="id" id="id" value="' . $p->id . '" class="hidden" type="text"/></td>';
+  $o.= '        </tr>';
+  $o.= '      </tbody>';
+  $o.= '    </table>';
+  $o.= '    <p class="submit" id="jump_submit">';
+  $o.= '      <input name="submitted" type="hidden" value="yes" />';
+  $o.= '      <input type="submit" value="Submit" class="button-primary" />';
+  $o.= '    </p>';
+  $o.= '  </form>';
+  $o.= '</div>';
+
   echo $o;
 }
 
