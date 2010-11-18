@@ -16,10 +16,9 @@ add_action('admin_menu', 'grimp_timetracker_menu');
 
 function grimp_timetracker_menu() {
   add_menu_page(__('Time Tracker','grimp-timetracker'), __('Time Tracker','grimp-timetracker'), 'read', 'grimp-timetracker-options', 'grimp_timetracker_options');
-  add_submenu_page( 'grimp-timetracker-options', __('Add Project','grimp-timetracker'), __('Add Project','grimp-timetracker'), 'manage_options', 'grimp-timetracker-add-project', 'grimp_timetracker_add_project');
+  add_submenu_page( 'grimp-timetracker-options', __('Add Project','grimp-timetracker'), __('Add Project','grimp-timetracker'), 'manage_options', 'grimp-timetracker-project', 'grimp_timetracker_project');
   add_submenu_page( 'grimp-timetracker-options', __('Add Type','grimp-timetracker'), __('Add Type','grimp-timetracker'), 'manage_options', 'grimp-timetracker-add-type', 'grimp_timetracker_add_type');
   add_submenu_page( 'grimp-timetracker-options', __('Add Hours','grimp-timetracker'), __('Add Hours','grimp-timetracker'), 'read', 'grimp-timetracker-add-hour', 'grimp_timetracker_add_hour');
-  add_submenu_page( 'grimp-timetracker-options', __('Edit Project','grimp-timetracker'), __('Edit Project','grimp-timetracker'), 'read', 'grimp-timetracker-edit-project', 'grimp_timetracker_edit_project');
   add_submenu_page( 'grimp-timetracker-options', __('Edit Type','grimp-timetracker'), __('Edit Type','grimp-timetracker'), 'read', 'grimp-timetracker-edit-type', 'grimp_timetracker_edit_type');
   add_submenu_page( 'grimp-timetracker-options', __('Edit Hours','grimp-timetracker'), __('Edit Hours','grimp-timetracker'), 'read', 'grimp-timetracker-edit-hour', 'grimp_timetracker_edit_hour');
 }
@@ -153,7 +152,7 @@ function grimp_timetracker_options() {
         $o.= '      <td>';
         $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $pr->id . '">' . $pr->name . '</a>';
         $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-edit-project&p=' . $pr->id . '">Edit</a> |';
+        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-project&p=' . $pr->id . '">Edit</a> |';
         $o.= '<span class="delete"><a href="' . $_SERVER['REQUEST_URI'] . '&a=delete&pr=' . $pr->id . '">Delete</a></span>';
       $o.= '</div>';
         $o.= '</td>';
@@ -234,7 +233,7 @@ function grimp_timetracker_options() {
   echo $o;  
 }
 
-function grimp_timetracker_edit_project() {
+function grimp_timetracker_project() {
   if (!current_user_can('manage_options'))  {
     wp_die( __('You do not have sufficient permissions to access this page.') );
   }
