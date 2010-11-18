@@ -17,9 +17,8 @@ add_action('admin_menu', 'grimp_timetracker_menu');
 function grimp_timetracker_menu() {
   add_menu_page(__('Time Tracker','grimp-timetracker'), __('Time Tracker','grimp-timetracker'), 'read', 'grimp-timetracker-options', 'grimp_timetracker_options');
   add_submenu_page( 'grimp-timetracker-options', __('Add Project','grimp-timetracker'), __('Add Project','grimp-timetracker'), 'manage_options', 'grimp-timetracker-project', 'grimp_timetracker_project');
-  add_submenu_page( 'grimp-timetracker-options', __('Add Type','grimp-timetracker'), __('Add Type','grimp-timetracker'), 'manage_options', 'grimp-timetracker-add-type', 'grimp_timetracker_add_type');
+  add_submenu_page( 'grimp-timetracker-options', __('Add Type','grimp-timetracker'), __('Add Type','grimp-timetracker'), 'manage_options', 'grimp-timetracker-type', 'grimp_timetracker_type');
   add_submenu_page( 'grimp-timetracker-options', __('Add Hours','grimp-timetracker'), __('Add Hours','grimp-timetracker'), 'read', 'grimp-timetracker-add-hour', 'grimp_timetracker_add_hour');
-  add_submenu_page( 'grimp-timetracker-options', __('Edit Type','grimp-timetracker'), __('Edit Type','grimp-timetracker'), 'read', 'grimp-timetracker-edit-type', 'grimp_timetracker_edit_type');
   add_submenu_page( 'grimp-timetracker-options', __('Edit Hours','grimp-timetracker'), __('Edit Hours','grimp-timetracker'), 'read', 'grimp-timetracker-edit-hour', 'grimp_timetracker_edit_hour');
 }
 
@@ -289,43 +288,7 @@ function grimp_timetracker_project() {
   echo $o;
 }
 
-function grimp_timetracker_add_type() {
-  if (!current_user_can('manage_options'))  {
-    wp_die( __('You do not have sufficient permissions to access this page.') );
-  }
-
-  global $wpdb;
-  
-  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
-    $table_name = $wpdb->prefix . "timetracker_types";
-		$wpdb->insert( $table_name, array( 'id' => '', 'name' => $_POST['name'] ), array( '%i', '%s' ) );
-		echo '<div id="message" class="updated">';
-		echo '  <p>Type has been added.</p>';
-		echo '</div>';
-	}
-
-  $o = '<div class="wrap">';
-  $o.= '  <h2>Add a new type of hours:</h2>';
-  $o.= '  <form method="post" name="update_form" target="_self">';
-  $o.= '    <table class="form-table">';
-  $o.= '      <tbody>';
-  $o.= '        <tr>';
-  $o.= '          <th><label for="name">Name: </label></th>';
-  $o.= '          <td><input name="name" id="name" value="" class="regular-text" type="text"/></td>';
-  $o.= '        </tr>';
-  $o.= '      </tbody>';
-  $o.= '    </table>';
-  $o.= '    <p class="submit" id="jump_submit">';
-  $o.= '      <input name="submitted" type="hidden" value="yes" />';
-  $o.= '      <input type="submit" value="Submit" class="button-primary" />';
-  $o.= '    </p>';
-  $o.= '  </form>';
-  $o.= '</div>';
-  
-  echo $o;
-}
-
-function grimp_timetracker_edit_type() {
+function grimp_timetracker_type() {
   if (!current_user_can('manage_options'))  {
     wp_die( __('You do not have sufficient permissions to access this page.') );
   }
@@ -333,23 +296,41 @@ function grimp_timetracker_edit_type() {
   global $wpdb;
   $table_types = $wpdb->prefix . "timetracker_types";
   
-  if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
-		$wpdb->update( $table_types, array( 'name' => $_POST['name'] ), array( 'id' => $_POST['id']), array( '%s' ), array( '%s' ) );
+  if (isset($_GET['t']))
+    $i = $_GET['t'];
+
+  if (isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
+    if (isset($i))
+  		$wpdb->update($table_types, array('name'=>$_POST['name']), array('id'=>$_POST['id']), array('%s'), array('%s'));
+  	else
+  		$wpdb->insert($table_types, array('name'=>$_POST['name']), array('%s'));
 		echo '<div id="message" class="updated">';
-		echo '  <p>Type has been changed.</p>';
+    if (isset($i))
+      echo '  <p>Type has been changed.</p>';
+    else
+  		echo '  <p>Type has been added.</p>';
 		echo '</div>';
 	}
 
-  $t = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $_GET[t]");
+  if (isset($i))
+    $t = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $i");
+
   $o = '<div class="wrap">';
-  $o.= '  <h2>Edit type ' . $t->name . ':</h2>';
+  if (isset($i))
+    $o.= '  <h2>Edit type ' . $t->name . ':</h2>';
+  else
+    $o.= '  <h2>Add type:</h2>';
   $o.= '  <form method="post" name="update_form" target="_self">';
   $o.= '    <table class="form-table">';
   $o.= '      <tbody>';
   $o.= '        <tr>';
   $o.= '          <th><label for="name">Name: </label></th>';
-  $o.= '          <td><input name="name" id="name" value="' . $t->name . '" class="regular-text" type="text"/></td>';
-  $o.= '          <td><input name="id" id="id" value="' . $t->id . '" class="hidden" type="text"/></td>';
+  if (isset($i))
+    $o.= '          <td><input name="name" id="name" value="' . $t->name . '" class="regular-text" type="text"/></td>';
+  else
+    $o.= '          <td><input name="name" id="name" value="" class="regular-text" type="text"/></td>';
+  if (isset($i))
+    $o.= '          <td><input name="id" id="id" value="' . $t->id . '" class="hidden" type="text"/></td>';
   $o.= '        </tr>';
   $o.= '      </tbody>';
   $o.= '    </table>';
