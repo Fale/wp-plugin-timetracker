@@ -386,10 +386,10 @@ function grimp_timetracker_hour() {
 
   $t1 = (isset($i)) ? "<h2>Edit hours of $h->person:</h2>" : "<h2>Add hours:</h2>";
   $t2 = (isset($i)) ? grimp_timetracker_select($projects,$h->project) : grimp_timetracker_select($projects) ;
-  $t3 = (isset($i)) ? $h->hours : "" ;
+  $t3 = (isset($i)) ? $h->hours : "1.00" ;
   $t4 = (isset($i)) ? grimp_timetracker_select($types,$h->type) : grimp_timetracker_select($types) ;
   $t5 = (isset($i)) ? $h->description : "" ;
-  $t6 = (isset($i)) ? $h->day : "" ;
+  $t6 = (isset($i)) ? $h->day : date('Y-m-d') ;
   $t7 = (isset($i)) ? "<td><input name='id' id='id' value='$h->id' class='hidden' type='text'/></td>" : "";
 
 echo "
