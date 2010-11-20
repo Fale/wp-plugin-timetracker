@@ -25,123 +25,26 @@ function grimp_timetracker_options() {
   if (!current_user_can('read'))  {
     wp_die( __('You do not have sufficient permissions to access this page.') );
   }
-  
-  global $wpdb;
 
-  $table_hours = $wpdb->prefix . "timetracker_hours";
-  $table_projects = $wpdb->prefix . "timetracker_projects";
-  $table_types = $wpdb->prefix . "timetracker_types";
-  $table_users = $wpdb->users;
+  include_once("grimp-timetracker-dashboard.php");  
 
-  $ids = $wpdb->get_col("SELECT ID FROM $table_projects");
-  foreach($ids as $i => $id)
-    $projects[] = $wpdb->get_row("SELECT * FROM $table_projects WHERE ID = $id");
+  echo "<div class=\"wrap\">";
 
-  $ids = $wpdb->get_col("SELECT ID FROM $table_types");
-  foreach($ids as $i => $id)
-    $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE ID = $id");
-
-  $o = '<div class="wrap">';
   if (isset($_GET['p'])) {
-    $p = $wpdb->get_var("SELECT name FROM $table_projects WHERE ID = $_GET[p]");
-    $o.= '<h2>Progetto ' . $p . ' <a href="' . strstr($_SERVER['REQUEST_URI'], "&", true) . '" class="button">Back</a></h2>';
-    $o.= '<table class="widefat">';
-    $o.= '  <thead>';
-    $o.= '   <tr>';
-    $o.= '      <th>Persona</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '      <th>Tipo</th>';
-    $o.= '      <th>Descrizione</th>';
-    $o.= '      <th>Giorno</th>';
-    $o.= '    </tr>';
-    $o.= '  </thead>';
-    $o.= '  <tbody>';
-    $ids = $wpdb->get_col("SELECT ID FROM $table_hours WHERE project = $_GET[p] ORDER BY day ASC");
-    foreach($ids as $i => $id)
-      $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE ID = $id");
-      foreach($hours as $h => $hour) {
-        $o.= '    <tr>';
-        $o.= '      <td>';
-        $o.= get_userdata($hour->person)->display_name;
-        $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-hour&h=' . $hour->ID . '">Edit</a>';
-      $o.= '</div>';
-        $o.= '</td>';
-        $o.= '      <td>' . $hour->hours . '</td>';
-        $o.= '      <td>' . $types[$hour->type-1]->name . '</td>';
-        $o.= '      <td>' . $hour->description . '</td>';
-        $o.= '      <td>' . $hour->day . '</td>';
-        $o.= '    </tr>';
-      }
-    unset ($hours);
-    $o.= '  </tbody>';
-    $o.= '  <tfoot>';
-    $o.= '   <tr>';
-    $o.= '      <th>Persona</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '      <th>Tipo</th>';
-    $o.= '      <th>Descrizione</th>';
-    $o.= '      <th>Giorno</th>';
-    $o.= '    </tr>';
-    $o.= '  </tfoot>';
-    $o.= '</table>';
+    grimp_timetracker_widget_five(array("Progetto","projects","project","p"),$_GET['p']);
   }
   
   if (isset($_GET['u'])) {
-    $u = $wpdb->get_var("SELECT ID FROM $table_users WHERE ID = $_GET[u]");
-    $o.= '<h2>Ore fatte da ' . get_userdata($u)->display_name . ' <a href="' . strstr($_SERVER['REQUEST_URI'], "&", true) . '" class="button">Back</a></h2>';
-    $o.= '<table class="widefat">';
-    $o.= '  <thead>';
-    $o.= '   <tr>';
-    $o.= '      <th>Progetto</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '      <th>Tipo</th>';
-    $o.= '      <th>Descrizione</th>';
-    $o.= '      <th>Giorno</th>';
-    $o.= '    </tr>';
-    $o.= '  </thead>';
-    $o.= '  <tbody>';
-    $ids = $wpdb->get_col("SELECT ID FROM $table_hours WHERE person = $_GET[u] ORDER BY day ASC");
-    foreach($ids as $i => $id)
-      $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE ID = $id");
-      foreach($hours as $h => $hour) {
-        $o.= '    <tr>';
-        $o.= '      <td>';
-        $o.= $projects[$hour->project-1]->name;
-        $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-hour&h=' . $hour->ID . '">Edit</a>';
-      $o.= '</div>';
-        $o.= '</td>';
-        $o.= '      <td>' . $hour->hours . '</td>';
-        $o.= '      <td>' . $types[$hour->type-1]->name . '</td>';
-        $o.= '      <td>' . $hour->description . '</td>';
-        $o.= '      <td>' . $hour->day . '</td>';
-        $o.= '    </tr>';
-      }
-    unset ($hours);
-    $o.= '  </tbody>';
-    $o.= '  <tfoot>';
-    $o.= '   <tr>';
-    $o.= '      <th>Progetto</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '      <th>Tipo</th>';
-    $o.= '      <th>Descrizione</th>';
-    $o.= '      <th>Giorno</th>';
-    $o.= '    </tr>';
-    $o.= '  </tfoot>';
-    $o.= '</table>';
+    grimp_timetracker_widget_five(array("Ore fatte da","users","user","u"),$_GET['u']);
   }
-  $o.= '</div>';
-  echo $o;
 
   if (!isset($_GET['p']) && !isset($_GET['u'])) {
-    include_once("grimp-timetracker-dashboard.php");
-    echo "<div class=\"wrap\">";
     grimp_timetracker_widget_two(array("Progetti","projects","project","p"));
     grimp_timetracker_widget_two(array("Persone","users","person","u"));
     grimp_timetracker_widget_two(array("Tipi di Ora","types","type","t"));
-    echo "</div>";
   }
+
+  echo "</div>";
 }
 
 function grimp_timetracker_project() {
