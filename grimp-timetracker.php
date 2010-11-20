@@ -26,7 +26,7 @@ function grimp_timetracker_options() {
     wp_die( __('You do not have sufficient permissions to access this page.') );
   }
 
-  include_once("grimp-timetracker-dashboard.php");  
+  include_once("grimp-timetracker_dashboard.php");
 
   echo "<div class=\"wrap\">";
   if (isset($_GET['p']))
