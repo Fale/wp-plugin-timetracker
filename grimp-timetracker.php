@@ -174,7 +174,10 @@ function grimp_timetracker_hour() {
 
   if(isset($_POST['submitted']) and $_POST['submitted'] == 'yes') {
     if (isset($i))
-  		$wpdb->update( $table_hours, array( 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'type' => $_POST['type'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( 'id' => $_POST['id']), array( '%s', '%s', '%s', '%s', '%s' ), array( '%s' ) );
+      if ($_POST['delete'])
+        $wpdb->query("DELETE FROM $table_hours WHERE ID = $_POST[id]");
+      else
+    		$wpdb->update( $table_hours, array( 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'type' => $_POST['type'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( 'id' => $_POST['id']), array( '%s', '%s', '%s', '%s', '%s' ), array( '%s' ) );
     else
       $wpdb->insert( $table_hours, array( 'person' => $user_ID, 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'type' => $_POST['type'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%s', '%s', '%s', '%s', '%s', '%s' ) );
 		echo '<div id="message" class="updated">';
@@ -203,7 +206,7 @@ function grimp_timetracker_hour() {
   $t5 = (isset($i)) ? $h->description : "" ;
   $t6 = (isset($i)) ? $h->day : date('Y-m-d') ;
   $t7 = (isset($i)) ? "<td><input name='id' id='id' value='$h->ID' class='hidden' type='text'/></td>" : "";
-
+  $t8 = (isset($i)) ? "<tr><td><input name='delete' id='delete' value='$h->ID' type='checkbox'/> Delete</td></tr>" : "";
 echo "
 <div class='wrap'>
   <h2>$t1</h2>
@@ -231,6 +234,7 @@ echo "
         <td><input name='day' id='day' value='$t6' class='regular-text' type='text'/></td>
         $t7
       </tr>
+      $t8
       <tbody>
     </table>
     <p class='submit' id='jump_submit'>
