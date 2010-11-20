@@ -182,7 +182,10 @@ function grimp_timetracker_hour() {
       $wpdb->insert( $table_hours, array( 'person' => $user_ID, 'project' => $_POST['project'], 'hours' => $_POST['hours'], 'type' => $_POST['type'], 'description' => $_POST['description'], 'day' => $_POST['day'] ), array( '%s', '%s', '%s', '%s', '%s', '%s' ) );
 		echo '<div id="message" class="updated">';
     if (isset($i))
-      echo '  <p>Hours have been changed.</p>';
+      if ($_POST['delete'])
+        echo '  <p>Hours have been deleted.</p>';
+      else
+        echo '  <p>Hours have been changed.</p>';
     else
   		echo '  <p>Hours have been added.</p>';
 		echo '</div>';
