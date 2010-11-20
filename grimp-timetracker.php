@@ -70,7 +70,7 @@ function grimp_timetracker_project() {
   if (isset($i))
     $p = $wpdb->get_row("SELECT * FROM $table_projects WHERE ID = $i");
 
-  $t1 = (isset($i)) ? "<h2>Edit project $p->name:</h2>" : "<h2>Add project:</h2>";
+  $t1 = (isset($i)) ? "<h2>Edit project $p->name: <a href=\"javascript:history.back(-1)\" class=\"button\">Back</a></h2>" : "<h2>Add project:</h2>";
   $t2 = (isset($i)) ? $p->name : "" ;
   $t3 = (isset($i)) ? "<td><input name='id' id='id' value='$p->ID' class='hidden' type='text'/></td>" : "";
   echo "
@@ -121,7 +121,7 @@ function grimp_timetracker_type() {
   if (isset($i))
     $t = $wpdb->get_row("SELECT * FROM $table_types WHERE ID = $i");
 
-  $t1 = (isset($i)) ? "<h2>Edit type $t->name:</h2>" : "<h2>Add type:</h2>";
+  $t1 = (isset($i)) ? "<h2>Edit type $t->name: <a href=\"javascript:history.back(-1)\" class=\"button\">Back</a></h2>" : "<h2>Add type:</h2>";
   $t2 = (isset($i)) ? $t->name : "" ;
   $t3 = (isset($i)) ? "<td><input name='id' id='id' value='$t->ID' class='hidden' type='text'/></td>" : "";
   echo "
@@ -196,7 +196,7 @@ function grimp_timetracker_hour() {
   foreach($ids as $c => $id)
     $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE ID = $id");
 
-  $t1 = (isset($i)) ? "<h2>Edit hours of $h->person:</h2>" : "<h2>Add hours:</h2>";
+  $t1 = (isset($i)) ? "<h2>Edit hours of $h->person: <a href=\"javascript:history.back(-1)\" class=\"button\">Back</a></h2>" : "<h2>Add hours:</h2>";
   $t2 = (isset($i)) ? grimp_timetracker_select($projects,$h->project) : grimp_timetracker_select($projects) ;
   $t3 = (isset($i)) ? $h->hours : "1.00" ;
   $t4 = (isset($i)) ? grimp_timetracker_select($types,$h->type) : grimp_timetracker_select($types) ;
