@@ -159,7 +159,7 @@ function grimp_timetracker_widget_two($t) {
             <td>
               <a href=\"$_SERVER[REQUEST_URI]&$t[3]=$var->ID\">$var->name</a>
               <div class=\"row-actions no-wrap\">
-                <a href=\"$_SERVER[REQUEST_URI]?page=grimp-timetracker-$t[2]&$t[3]=$var->ID\">Edit</a>
+                <a href=\"" . strstr($_SERVER['REQUEST_URI'], "?", true) . "?page=grimp-timetracker-$t[2]&$t[3]=$var->ID\">Edit</a>
               </div>
             </td>
             <td>$h</td>
