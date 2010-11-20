@@ -29,21 +29,15 @@ function grimp_timetracker_options() {
   include_once("grimp-timetracker-dashboard.php");  
 
   echo "<div class=\"wrap\">";
-
-  if (isset($_GET['p'])) {
+  if (isset($_GET['p']))
     grimp_timetracker_widget_five(array("Progetto","projects","project","p"),$_GET['p']);
-  }
-  
-  if (isset($_GET['u'])) {
+  if (isset($_GET['u']))
     grimp_timetracker_widget_five(array("Ore fatte da","users","user","u"),$_GET['u']);
-  }
-
   if (!isset($_GET['p']) && !isset($_GET['u'])) {
     grimp_timetracker_widget_two(array("Progetti","projects","project","p"));
     grimp_timetracker_widget_two(array("Persone","users","person","u"));
     grimp_timetracker_widget_two(array("Tipi di Ora","types","type","t"));
   }
-
   echo "</div>";
 }
 
