@@ -23,11 +23,18 @@ function grimp_timetracker_widget_five($t, $d) {
   if( $t[1] == "projects" ) {
     $var = $wpdb->get_var("SELECT name FROM $table_projects WHERE ID = $d");
     $c1 = "Persona";
+    $c3 = "Tipo";
   }
   if( $t[1] == "users" ) {
     $var = $wpdb->get_var("SELECT ID FROM $table_users WHERE ID = $d");
     $var = get_userdata($var)->display_name;
     $c1 = "Progetto";
+    $c3 = "Tipo";
+  }
+  if( $t[1] == "types" ) {
+    $var = $wpdb->get_var("SELECT name FROM $table_types WHERE ID = $d");
+    $c1 = "Persona";
+    $c3 = "Progetto";
   }
   echo "
   <h2>$t[0] $var<a href=" . strstr($_SERVER['REQUEST_URI'], "&", true) . " class=\"button\">Back</a></h2>
@@ -36,7 +43,7 @@ function grimp_timetracker_widget_five($t, $d) {
      <tr>
         <th>$c1</th>
         <th>Ore</th>
-        <th>Tipo</th>
+        <th>$c3</th>
         <th>Descrizione</th>
         <th>Giorno</th>
       </tr>
@@ -84,13 +91,34 @@ function grimp_timetracker_widget_five($t, $d) {
       }
     unset ($hours);
   }
+  if ( $t[1] == "types" ) {
+    $ids = $wpdb->get_col("SELECT ID FROM $table_hours WHERE type = $d ORDER BY day ASC");
+    foreach($ids as $i => $id)
+      $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE ID = $id");
+      foreach($hours as $h => $hour) {
+        echo"
+        <tr>
+          <td>
+            " . get_userdata($hour->person)->display_name . "
+            <div class=\"row-actions no-wrap\">
+              <a href=\"" . strstr($_SERVER['REQUEST_URI'], "?", true) . "?page=grimp-timetracker-hour&h=$hour->ID\">Edit</a>
+            </div>
+          </td>
+          <td>$hour->hours</td>
+          <td>" . $types[$hour->project-1]->name . "</td>
+          <td>$hour->description</td>
+          <td>$hour->day</td>
+        </tr>";
+    }
+    unset ($hours);
+  }
   echo"
     </tbody>
     <tfoot>
      <tr>
         <th>$c1</th>
         <th>Ore</th>
-        <th>Tipo</th>
+        <th>$c3</th>
         <th>Descrizione</th>
         <th>Giorno</th>
       </tr>

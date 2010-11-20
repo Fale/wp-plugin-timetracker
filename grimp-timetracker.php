@@ -33,7 +33,9 @@ function grimp_timetracker_options() {
     grimp_timetracker_widget_five(array("Progetto","projects","project","p"),$_GET['p']);
   if (isset($_GET['u']))
     grimp_timetracker_widget_five(array("Ore fatte da","users","user","u"),$_GET['u']);
-  if (!isset($_GET['p']) && !isset($_GET['u'])) {
+  if (isset($_GET['t']))
+    grimp_timetracker_widget_five(array("Ore ","types","type","t"),$_GET['t']);
+  if (!isset($_GET['p']) && !isset($_GET['u']) && !isset($_GET['t'])) {
     grimp_timetracker_widget_two(array("Progetti","projects","project","p"));
     grimp_timetracker_widget_two(array("Persone","users","person","u"));
     grimp_timetracker_widget_two(array("Tipi di Ora","types","type","t"));
