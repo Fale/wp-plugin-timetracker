@@ -33,17 +33,17 @@ function grimp_timetracker_options() {
   $table_types = $wpdb->prefix . "timetracker_types";
   $table_users = $wpdb->users;
 
-  $ids = $wpdb->get_col("SELECT id FROM $table_projects");
+  $ids = $wpdb->get_col("SELECT ID FROM $table_projects");
   foreach($ids as $i => $id)
-    $projects[] = $wpdb->get_row("SELECT * FROM $table_projects WHERE id = $id");
+    $projects[] = $wpdb->get_row("SELECT * FROM $table_projects WHERE ID = $id");
 
-  $ids = $wpdb->get_col("SELECT id FROM $table_types");
+  $ids = $wpdb->get_col("SELECT ID FROM $table_types");
   foreach($ids as $i => $id)
-    $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $id");
+    $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE ID = $id");
 
   $o = '<div class="wrap">';
   if (isset($_GET['p'])) {
-    $p = $wpdb->get_var("SELECT name FROM $table_projects WHERE id = $_GET[p]");
+    $p = $wpdb->get_var("SELECT name FROM $table_projects WHERE ID = $_GET[p]");
     $o.= '<h2>Progetto ' . $p . ' <a href="' . strstr($_SERVER['REQUEST_URI'], "&", true) . '" class="button">Back</a></h2>';
     $o.= '<table class="widefat">';
     $o.= '  <thead>';
@@ -56,15 +56,15 @@ function grimp_timetracker_options() {
     $o.= '    </tr>';
     $o.= '  </thead>';
     $o.= '  <tbody>';
-    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE project = $_GET[p] ORDER BY day ASC");
+    $ids = $wpdb->get_col("SELECT ID FROM $table_hours WHERE project = $_GET[p] ORDER BY day ASC");
     foreach($ids as $i => $id)
-      $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $id");
+      $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE ID = $id");
       foreach($hours as $h => $hour) {
         $o.= '    <tr>';
         $o.= '      <td>';
         $o.= get_userdata($hour->person)->display_name;
         $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-hour&h=' . $hour->id . '">Edit</a>';
+        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-hour&h=' . $hour->ID . '">Edit</a>';
       $o.= '</div>';
         $o.= '</td>';
         $o.= '      <td>' . $hour->hours . '</td>';
@@ -88,7 +88,7 @@ function grimp_timetracker_options() {
   }
   
   if (isset($_GET['u'])) {
-    $u = $wpdb->get_var("SELECT id FROM $table_users WHERE id = $_GET[u]");
+    $u = $wpdb->get_var("SELECT ID FROM $table_users WHERE ID = $_GET[u]");
     $o.= '<h2>Ore fatte da ' . get_userdata($u)->display_name . ' <a href="' . strstr($_SERVER['REQUEST_URI'], "&", true) . '" class="button">Back</a></h2>';
     $o.= '<table class="widefat">';
     $o.= '  <thead>';
@@ -101,15 +101,15 @@ function grimp_timetracker_options() {
     $o.= '    </tr>';
     $o.= '  </thead>';
     $o.= '  <tbody>';
-    $ids = $wpdb->get_col("SELECT id FROM $table_hours WHERE person = $_GET[u] ORDER BY day ASC");
+    $ids = $wpdb->get_col("SELECT ID FROM $table_hours WHERE person = $_GET[u] ORDER BY day ASC");
     foreach($ids as $i => $id)
-      $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $id");
+      $hours[] = $wpdb->get_row("SELECT * FROM $table_hours WHERE ID = $id");
       foreach($hours as $h => $hour) {
         $o.= '    <tr>';
         $o.= '      <td>';
         $o.= $projects[$hour->project-1]->name;
         $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-hour&h=' . $hour->id . '">Edit</a>';
+        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-hour&h=' . $hour->ID . '">Edit</a>';
       $o.= '</div>';
         $o.= '</td>';
         $o.= '      <td>' . $hour->hours . '</td>';
@@ -131,101 +131,17 @@ function grimp_timetracker_options() {
     $o.= '  </tfoot>';
     $o.= '</table>';
   }
+  $o.= '</div>';
+  echo $o;
 
   if (!isset($_GET['p']) && !isset($_GET['u'])) {
-    $o.= '<h2>Progetti</h2>';
-    $o.= '<table class="widefat">';
-    $o.= '  <thead>';
-    $o.= '   <tr>';
-    $o.= '      <th>Progetto</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '    </tr>';
-    $o.= '  </thead>';
-    $o.= '  <tbody>';
-    foreach($projects as $p => $pr) {
-      $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE project = $pr->id");
-      $o.= '    <tr>';
-        $o.= '      <td>';
-        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $pr->id . '">' . $pr->name . '</a>';
-        $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-project&p=' . $pr->id . '">Edit</a>';
-      $o.= '</div>';
-        $o.= '</td>';
-      $o.= '      <td>' . $h . '</td>';
-      $o.= '    </tr>';
-    }
-    $o.= '  </tbody>';
-    $o.= '  <tfoot>';
-    $o.= '   <tr>';
-    $o.= '      <th>Persona</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '    </tr>';
-    $o.= '  </tfoot>';
-    $o.= '</table>';
-    $o.= '<br />';
-    $o.= '<h2>Persone</h2>';
-    $o.= '<table class="widefat">';
-    $o.= '  <thead>';
-    $o.= '   <tr>';
-    $o.= '      <th>Persona</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '    </tr>';
-    $o.= '  </thead>';
-    $o.= '  <tbody>';
-    $ids = $wpdb->get_col("SELECT id FROM $table_users");
-    foreach($ids as $i => $id) {
-      $h = '';
-      $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE person = $id");
-      if ($h) {
-        $o.= '    <tr>';
-        $o.= '      <td><a href="' . $_SERVER['REQUEST_URI'] . '&u=' . $id . '">' . get_userdata($id)->display_name . '</a></td>';
-        $o.= '      <td>' . $h . '</td>';
-        $o.= '    </tr>';
-      }
-    }
-    $o.= '  </tbody>';
-    $o.= '  <tfoot>';
-    $o.= '   <tr>';
-    $o.= '      <th>Persona</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '    </tr>';
-    $o.= '  </tfoot>';
-    $o.= '</table>';
-    $o.= '<br />';
-    $o.= '<h2>Tipi</h2>';
-    $o.= '<table class="widefat">';
-    $o.= '  <thead>';
-    $o.= '   <tr>';
-    $o.= '      <th>Tipi</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '    </tr>';
-    $o.= '  </thead>';
-    $o.= '  <tbody>';
-    foreach($types as $t => $ty) {
-      $h = $wpdb->get_var("SELECT SUM(hours) FROM $table_hours WHERE type = $ty->id");
-      $o.= '    <tr>';
-        $o.= '      <td>';
-//        $o.= '<a href="' . $_SERVER['REQUEST_URI'] . '&p=' . $ty->id . '">' . $ty->name . '</a>';
-        $o.= $ty->name;
-        $o.= '<div class="row-actions no-wrap">';
-        $o.= '<a href="' . strstr($_SERVER['REQUEST_URI'], "?", true) . '?page=grimp-timetracker-type&t=' . $ty->id . '">Edit</a>';
-      $o.= '</div>';
-        $o.= '</td>';
-      $o.= '      <td>' . $h . '</td>';
-      $o.= '    </tr>';
-    }
-    $o.= '  </tbody>';
-    $o.= '  <tfoot>';
-    $o.= '   <tr>';
-    $o.= '      <th>Persona</th>';
-    $o.= '      <th>Ore</th>';
-    $o.= '    </tr>';
-    $o.= '  </tfoot>';
-    $o.= '</table>';
+    include_once("grimp-timetracker-dashboard.php");
+    echo "<div class=\"wrap\">";
+    grimp_timetracker_widget_two(array("Progetti","projects","project","p"));
+    grimp_timetracker_widget_two(array("Persone","users","person","u"));
+    grimp_timetracker_widget_two(array("Tipi di Ora","types","type","t"));
+    echo "</div>";
   }
-  $o.= '</div>';
-
-  echo $o;  
 }
 
 function grimp_timetracker_project() {
@@ -253,11 +169,11 @@ function grimp_timetracker_project() {
 	}
 
   if (isset($i))
-    $p = $wpdb->get_row("SELECT * FROM $table_projects WHERE id = $i");
+    $p = $wpdb->get_row("SELECT * FROM $table_projects WHERE ID = $i");
 
   $t1 = (isset($i)) ? "<h2>Edit project $p->name:</h2>" : "<h2>Add project:</h2>";
   $t2 = (isset($i)) ? $p->name : "" ;
-  $t3 = (isset($i)) ? "<td><input name='id' id='id' value='$p->id' class='hidden' type='text'/></td>" : "";
+  $t3 = (isset($i)) ? "<td><input name='id' id='id' value='$p->ID' class='hidden' type='text'/></td>" : "";
   echo "
 <div class='wrap'>
   $t1
@@ -304,11 +220,11 @@ function grimp_timetracker_type() {
 	}
 
   if (isset($i))
-    $t = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $i");
+    $t = $wpdb->get_row("SELECT * FROM $table_types WHERE ID = $i");
 
   $t1 = (isset($i)) ? "<h2>Edit type $t->name:</h2>" : "<h2>Add type:</h2>";
   $t2 = (isset($i)) ? $t->name : "" ;
-  $t3 = (isset($i)) ? "<td><input name='id' id='id' value='$t->id' class='hidden' type='text'/></td>" : "";
+  $t3 = (isset($i)) ? "<td><input name='id' id='id' value='$t->ID' class='hidden' type='text'/></td>" : "";
   echo "
 <div class='wrap'>
   $t1
@@ -333,8 +249,8 @@ function grimp_timetracker_type() {
 function grimp_timetracker_select($arrays,$val="") {
   $o = "";
   foreach($arrays as $a => $array) {
-    $o.= "<option id='type' value='$array->id'";
-    if($val == $array->id)
+    $o.= "<option id='type' value='$array->ID'";
+    if($val == $array->ID)
       $o.= "selected";
     $o.=">$array->name</option>";
   }
@@ -371,15 +287,15 @@ function grimp_timetracker_hour() {
   }
 
   if (isset($i))
-    $h = $wpdb->get_row("SELECT * FROM $table_hours WHERE id = $i");
+    $h = $wpdb->get_row("SELECT * FROM $table_hours WHERE ID = $i");
 
-  $ids = $wpdb->get_col("SELECT id FROM $table_projects");
+  $ids = $wpdb->get_col("SELECT ID FROM $table_projects");
   foreach($ids as $c => $id)
-    $projects[] = $wpdb->get_row("SELECT * FROM $table_projects WHERE id = $id");
+    $projects[] = $wpdb->get_row("SELECT * FROM $table_projects WHERE ID = $id");
 
-  $ids = $wpdb->get_col("SELECT id FROM $table_types");
+  $ids = $wpdb->get_col("SELECT ID FROM $table_types");
   foreach($ids as $c => $id)
-    $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE id = $id");
+    $types[] = $wpdb->get_row("SELECT * FROM $table_types WHERE ID = $id");
 
   $t1 = (isset($i)) ? "<h2>Edit hours of $h->person:</h2>" : "<h2>Add hours:</h2>";
   $t2 = (isset($i)) ? grimp_timetracker_select($projects,$h->project) : grimp_timetracker_select($projects) ;
@@ -387,7 +303,7 @@ function grimp_timetracker_hour() {
   $t4 = (isset($i)) ? grimp_timetracker_select($types,$h->type) : grimp_timetracker_select($types) ;
   $t5 = (isset($i)) ? $h->description : "" ;
   $t6 = (isset($i)) ? $h->day : date('Y-m-d') ;
-  $t7 = (isset($i)) ? "<td><input name='id' id='id' value='$h->id' class='hidden' type='text'/></td>" : "";
+  $t7 = (isset($i)) ? "<td><input name='id' id='id' value='$h->ID' class='hidden' type='text'/></td>" : "";
 
 echo "
 <div class='wrap'>
