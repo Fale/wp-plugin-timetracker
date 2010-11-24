@@ -105,7 +105,7 @@ function grimp_timetracker_widget_five($t, $d) {
             </div>
           </td>
           <td>$hour->hours</td>
-          <td>" . $types[$hour->project-1]->name . "</td>
+          <td>" . $projects[$hour->project-1]->name . "</td>
           <td>$hour->description</td>
           <td>$hour->day</td>
         </tr>";
